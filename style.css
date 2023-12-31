@@ -1,0 +1,39 @@
+div.controls,
+div.card-list {
+	width: 400px;
+	display: flex;
+}
+
+div.controls {
+	margin-bottom: 10px;
+}
+
+input#exercise {
+	margin-right: 5px;
+}
+
+ul.cards {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	width: 400px;
+	margin: 0px;
+	padding: 0px;
+	align-items: space-around;
+}
+
+ul.cards li {
+	display: flex;
+	justify-content: space-between;
+	width: 390px;
+	height: 60px;
+	border: solid black;
+	margin-bottom: 5px;
+	padding: 5px;
+}
+
+.card-controls {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
