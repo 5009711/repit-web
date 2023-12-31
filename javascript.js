@@ -98,27 +98,80 @@ function updateCardList(exercise) {
 
 function createCard(exercise) {
 	const card = document.createElement("li");
+	
+	const leftCard = document.createElement("div");
+	const rightCard = document.createElement("div");
+
 	const text = document.createElement("div");
+	const name = document.createElement("name");
+	const weight = document.createElement("weight");
+	const sets = document.createElement("sets");
+
+	const weightsets = document.createElement("div");
+	const weightInput = document.createElement("input");
+	const setsInput = document.createElement("input");
+	const repBtn = document.createElement("button");
+	
 	const controls = document.createElement("div");
 	const detailsBtn = document.createElement("button");
 	const removeBtn = document.createElement("button");
 	
 	removeBtn.addEventListener("click", (e) => {
-		e.target.parentNode.parentNode.remove();
+		e.target.parentNode.parentNode.parentNode.remove();
 	})
+
+	repBtn.addEventListener("click", (e) => {
+		let setsInput = e.target.previousElementSibling;
+		let weightInput = setsInput.previousElementSibling;
+		let textFields = e.target.parentNode.previousElementSibling;
+
+		textFields.querySelector(".card-weight").textContent +=
+		`${weightInput.value} `;
+		textFields.querySelector(".card-sets").textContent += `${setsInput.value} `;
+
+		weightInput.value = "";
+		setsInput.value = "";
+		weightInput.focus();
+	});
 
 	detailsBtn.textContent = "Details";
 	removeBtn.textContent = "Remove";
-
-	
 	controls.classList.add("card-controls");
 	controls.appendChild(detailsBtn);
 	controls.appendChild(removeBtn);
-	
-	text.textContent = exercise.name;
 
-	card.appendChild(text);
-	card.appendChild(controls);
+	text.classList.add("card-text");	
+	weight.textContent = "Weight: ";
+	weight.classList.add("card-weight");
+	sets.textContent = "Sets: ";
+	sets.classList.add("card-sets");
+	name.textContent = exercise.name;
+	name.style.fontSize = "15px";
+	name.style.fontWeight = "bold";
+	weight.style.fontSize = sets.style.fontSize = "12px";
+	text.appendChild(name);
+	text.appendChild(weight);
+	text.appendChild(sets);
+
+	weightInput.setAttribute("type", "text");
+	weightInput.setAttribute("placeholder", "Weight");
+	weightInput.style.width = setsInput.style.width = "50px";
+	setsInput.setAttribute("type", "text");
+	setsInput.setAttribute("placeholder", "Reps");
+	repBtn.textContent = "Log";
+	weightsets.appendChild(weightInput);
+	weightsets.appendChild(setsInput);
+	weightsets.appendChild(repBtn);
+
+	leftCard.appendChild(text);
+	leftCard.appendChild(weightsets);
+	leftCard.classList.add("left-card");
+
+	rightCard.appendChild(controls);
+	rightCard.classList.add("right-card");
+
+	card.appendChild(leftCard);
+	card.appendChild(rightCard);
 	return card;
 }
 
