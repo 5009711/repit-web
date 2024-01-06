@@ -76,6 +76,10 @@ class Workout {
 	addExercise(exercise) {
 		this.exercises.push(exercise);
 	}
+
+	getExercise(name) {
+		return this.exercises.find(exercise => exercise.name == name);
+	}
 }
 
 let workout = new Workout(name="default");
@@ -124,6 +128,14 @@ function createCard(exercise) {
 		let setsInput = e.target.previousElementSibling;
 		let weightInput = setsInput.previousElementSibling;
 		let textFields = e.target.parentNode.previousElementSibling;
+		let exerciseName = textFields.querySelector(".card-name").textContent;
+		
+		// find exercise object with same name as card and add set	
+		let newSet = {};
+		newSet['weight'] = weightInput.value;
+		newSet['reps'] = setsInput.value;
+		workout.getExercise(exerciseName).sets.push(newSet);
+		console.log(workout.getExercise(exerciseName));
 
 		textFields.querySelector(".card-weight").textContent +=
 		`${weightInput.value} `;
@@ -146,6 +158,7 @@ function createCard(exercise) {
 	sets.textContent = "Sets: ";
 	sets.classList.add("card-sets");
 	name.textContent = exercise.name;
+	name.classList.add("card-name");
 	name.style.fontSize = "15px";
 	name.style.fontWeight = "bold";
 	weight.style.fontSize = sets.style.fontSize = "12px";
