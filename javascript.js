@@ -16,11 +16,19 @@ class Exercise {
 	}
 
 	get totalWeight() {
-		return this.totalWeight();
+		return this.calcWeight();
 	}
 
 	get totalReps() {
-		return this.totalReps();
+		return this.calcReps();
+	}
+
+	get weightList() {
+		return this.sets.map(set => set.weight);
+	}
+
+	get repList() {
+		return this.sets.map(set => set.reps);
 	}
 
 	calcSets() {
@@ -29,16 +37,16 @@ class Exercise {
 
 	calcWeight() {
 		let weight = 0;
-		for (const set in sets) {
-			weight += set['weight'];
+		for (const set of this.sets) {
+			weight += +set.weight * +set.reps;
 		}
 		return weight;
 	}
 
 	calcReps() {
 		let reps = 0;
-		for (const set in sets) {
-			reps += set['reps'];
+		for (const set of this.sets) {
+			reps += +set.reps;
 		}
 		return reps;
 	}
@@ -100,6 +108,23 @@ function updateCardList(exercise) {
 	cards.appendChild(createCard(exercise));
 }
 
+function refreshCardList() {
+	let cards = document.querySelectorAll("li");
+
+	console.log(cards);
+
+	for (const card of cards) {
+		console.log(card, typeof card);
+		let exercise = workout.getExercise(card.querySelector(".card-name").textContent);
+		console.log(exercise);
+		console.log(exercise.weightList);
+		console.log(exercise.repList);
+		card.querySelector(".card-weight").textContent = `Weight (Total: ${exercise.totalWeight}): ${exercise.weightList.join(", ")}`;
+		card.querySelector(".card-sets").textContent = `Sets (Total: ${exercise.totalReps}): ${exercise.repList.join(", ")}`;
+	}
+}
+
+
 function createCard(exercise) {
 	const card = document.createElement("li");
 	
@@ -121,6 +146,14 @@ function createCard(exercise) {
 	const removeBtn = document.createElement("button");
 	
 	removeBtn.addEventListener("click", (e) => {
+		// find exercise card and remove from workout
+		let exerciseName = e.target.parentNode.parentNode.parentNode.querySelector(".card-name").textContent;
+		console.log(exerciseName);
+		let exerciseIndex = workout.exercises.map(exercise => exercise.name).indexOf(exerciseName);
+		workout.exercises.splice(exerciseIndex, 1);
+		console.log(workout);
+
+		// remove card from cardlist
 		e.target.parentNode.parentNode.parentNode.remove();
 	})
 
@@ -137,9 +170,12 @@ function createCard(exercise) {
 		workout.getExercise(exerciseName).sets.push(newSet);
 		console.log(workout.getExercise(exerciseName));
 
-		textFields.querySelector(".card-weight").textContent +=
-		`${weightInput.value} `;
-		textFields.querySelector(".card-sets").textContent += `${setsInput.value} `;
+		// refresh cards to read from associated exercise
+		refreshCardList();
+
+		// textFields.querySelector(".card-weight").textContent +=
+		// `${weightInput.value} `;
+		// textFields.querySelector(".card-sets").textContent += `${setsInput.value} `;
 
 		weightInput.value = "";
 		setsInput.value = "";
@@ -153,9 +189,9 @@ function createCard(exercise) {
 	controls.appendChild(removeBtn);
 
 	text.classList.add("card-text");	
-	weight.textContent = "Weight: ";
+	weight.textContent = "Weight (Total: 0): ";
 	weight.classList.add("card-weight");
-	sets.textContent = "Sets: ";
+	sets.textContent = "Sets (Total: 0): ";
 	sets.classList.add("card-sets");
 	name.textContent = exercise.name;
 	name.classList.add("card-name");
