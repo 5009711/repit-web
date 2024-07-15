@@ -4,11 +4,11 @@ const cards = document.querySelector("ul.cards");
 
 
 class Exercise {
-	constructor(name, minWeight=45, sets=[], muscleGroups) {
+	constructor(name, muscleGroups, minWeight=45, sets=[]) {
 		this.name = name,
+		this.muscleGroups = muscleGroups,
 		this.minWeight = minWeight,
-		this.sets = sets,
-		this.muscleGroups = muscleGroups
+		this.sets = sets
 	}
 
 	get totalSets() {
