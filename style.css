@@ -47,8 +47,15 @@ ul.cards li {
 	justify-content: space-between;
 }
 
+.right-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
 .card-controls {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	align-items: flex-end;
 }

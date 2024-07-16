@@ -119,8 +119,8 @@ function refreshCardList() {
 		console.log(exercise);
 		console.log(exercise.weightList);
 		console.log(exercise.repList);
-		card.querySelector(".card-weight").textContent = `Weight (Total: ${exercise.totalWeight}): ${exercise.weightList.join(", ")}`;
-		card.querySelector(".card-sets").textContent = `Sets (Total: ${exercise.totalReps}): ${exercise.repList.join(", ")}`;
+		card.querySelector(".card-weight").textContent = `Weight (Total: ${exercise.totalWeight.toLocaleString('en-US')}): ${exercise.weightList.join(", ")}`;
+		card.querySelector(".card-sets").textContent = `Sets (Total: ${exercise.totalReps.toLocaleString('en-US')}): ${exercise.repList.join(", ")}`;
 	}
 }
 
@@ -142,6 +142,7 @@ function createCard(exercise) {
 	const repBtn = document.createElement("button");
 	
 	const controls = document.createElement("div");
+	const message = document.createElement("div");
 	const detailsBtn = document.createElement("button");
 	const removeBtn = document.createElement("button");
 	
@@ -162,31 +163,46 @@ function createCard(exercise) {
 		let weightInput = setsInput.previousElementSibling;
 		let textFields = e.target.parentNode.previousElementSibling;
 		let exerciseName = textFields.querySelector(".card-name").textContent;
-		
-		// find exercise object with same name as card and add set	
-		let newSet = {};
-		newSet['weight'] = weightInput.value;
-		newSet['reps'] = setsInput.value;
-		workout.getExercise(exerciseName).sets.push(newSet);
-		console.log(workout.getExercise(exerciseName));
 
-		// refresh cards to read from associated exercise
-		refreshCardList();
+		// validate weight and set fields
+		if (!(/^[1-9]\d*$/.test(setsInput.value))) {
+			console.log("sets invalid");
+			message.textContent = "Enter a non-zero, positive integer for reps.";
+		} else if (!(/^[1-9]\d*(\.\d+)?$|^0\.\d*[1-9]\d*$/.test(weightInput.value))) {
+			console.log("weight invalid");
+			message.textContent = "Enter a non-zero, positive number for weight.";
+		} else {
+			// find exercise object with same name as card and add set	
+			message.textContent = "";
+			let newSet = {};
+			newSet['weight'] = weightInput.value;
+			newSet['reps'] = setsInput.value;
+			workout.getExercise(exerciseName).sets.push(newSet);
+			console.log(workout.getExercise(exerciseName));
 
-		// textFields.querySelector(".card-weight").textContent +=
-		// `${weightInput.value} `;
-		// textFields.querySelector(".card-sets").textContent += `${setsInput.value} `;
+			// refresh cards to read from associated exercise
+			refreshCardList();
 
-		weightInput.value = "";
-		setsInput.value = "";
-		weightInput.focus();
+			// textFields.querySelector(".card-weight").textContent +=
+			// `${weightInput.value} `;
+			// textFields.querySelector(".card-sets").textContent += `${setsInput.value} `;
+
+			weightInput.value = "";
+			setsInput.value = "";
+			weightInput.focus();
+		};
 	});
 
 	detailsBtn.textContent = "Details";
 	removeBtn.textContent = "Remove";
+	detailsBtn.style.width = removeBtn.style.width =  "80px";
 	controls.classList.add("card-controls");
 	controls.appendChild(detailsBtn);
 	controls.appendChild(removeBtn);
+
+	message.classList.add("card-message");
+	message.style.fontSize = "9px";
+	message.style.color = "red";
 
 	text.classList.add("card-text");	
 	weight.textContent = "Weight (Total: 0): ";
@@ -204,7 +220,7 @@ function createCard(exercise) {
 
 	weightInput.setAttribute("type", "text");
 	weightInput.setAttribute("placeholder", "Weight");
-	weightInput.style.width = setsInput.style.width = "50px";
+	weightInput.style.width = setsInput.style.width = "70px";
 	setsInput.setAttribute("type", "text");
 	setsInput.setAttribute("placeholder", "Reps");
 	repBtn.textContent = "Log";
@@ -217,14 +233,10 @@ function createCard(exercise) {
 	leftCard.classList.add("left-card");
 
 	rightCard.appendChild(controls);
+	rightCard.appendChild(message);
 	rightCard.classList.add("right-card");
 
 	card.appendChild(leftCard);
 	card.appendChild(rightCard);
 	return card;
 }
-
-
-
-
-
